@@ -91,30 +91,67 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
-\section{Finite unitary reflection groups}
+\section{Homological methods}
 
-A \Defn{Coxeter group}
-has generators $\{s_1, .. s_n \}$
-with relations
-\begin{align*}
-    s_i^2 &= 1 \ \ \mbox{for}\ i=1,..,n\\
-    (s_i s_j)^{m(i,j)} &= 1\ \ \mbox{for}\ i,j=1,..,n.
-\end{align*}
-where $m(i,j)\in\{2,3,4,6\}.$
-See \cite{Humphreys1992}.
-A \Defn{dihedral group}
-is a Coxeter group with two generators.
+\subsection{The category of quantum codes}
 
-The \Defn{Coxeter diagram}
-associated to a Coxeter group is an undirected graph
-with vertices $1,..,n$ and edges $(i,j)$ when $m(i,j)\ge 3.$
-The edges are labelled with the value $m(i,j)$.
+has morphisms chainmaps.
+
+Solve for the space of all chainmaps
+
+\subsection{Pushouts and welding}
+
+\cite{michnicki2014}
+
+\subsection{Renormalization}
+
+Renormalization is a chain map
 
 
-\section{Classical simulation}
+% http://arxiv.org/abs/0911.0581
+\cite{Duclos-Cianci2010}
 
-\cite{Clark2007}
+\subsection{Homological product}
 
+Aka tensor product
+
+idea: apply MPS decoder \cite{bravyi2014}
+to the
+rotate toric codes
+\cite{kovalev2012}
+
+State of the art:
+% https://arxiv.org/abs/1804.01950
+\cite{kovalev2018}
+
+
+Belief propagation, 
+bicycle codes, 
+poulin paper
+
+Fascinating that using belief propagation
+for quantum ldpc codes fails so spectacularly:
+first because of degeneracy,
+second because of many small loops.
+
+
+\section{Raghavendra decoding}
+
+% https://rjlipton.wordpress.com/2012/08/09/a-new-way-to-solve-linear-equations/
+% https://arxiv.org/abs/1501.01598
+This was a nice idea for an LDPC decoder,
+but I could not get it to work beyond about 80 qubits.
+It just does not seem to scale.
+
+\cite{brown2016}
+
+\section{Gauge code Hamiltonians}
+
+random instances without stabilizers 
+store a qubit
+
+
+\section{Classical codes and lattices}
 
 
 \bibliography{refs}{}

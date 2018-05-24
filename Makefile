@@ -4,5 +4,4 @@ ldpc: ldpc.tex refs.bib
 	bibtex ldpc
 	pdflatex ldpc.tex
 	pdflatex ldpc.tex
-	open ldpc.pdf 
 
