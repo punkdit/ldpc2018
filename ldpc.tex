@@ -1,0 +1,126 @@
+
+%\documentclass[12pt,notitlepage,aps,pra,longbibliography,nofootinbib,tightenlines]{revtex4}
+%\documentclass[12pt,notitlepage,longbibliography,nofootinbib,tightenlines]{revtex4-1}
+
+\documentclass[12pt]{article}
+
+%\documentclass[12pt,a4]{revtex4}
+%\documentclass[12pt]{article}
+%\documentclass[11pt, twocolumn]{article}
+
+%\usepackage{epsf}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{natbib}
+%\usepackage{cite}
+\usepackage{fullpage} % uses 20 percent less pages.
+
+\usepackage{framed}
+\usepackage{tikz-cd}
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+%\RequirePackage{algorithmic}
+%\RequirePackage{algorithm}
+%\RequirePackage{theorem}
+%\RequirePackage{eucal}
+\RequirePackage{color}
+\RequirePackage{xcolor}
+\RequirePackage{url}
+\RequirePackage{mdwlist}
+
+\RequirePackage[all]{xy}
+\CompileMatrices
+\RequirePackage{hyperref}
+\RequirePackage{graphicx}
+%\RequirePackage[dvips]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+
+\begin{document}
+
+\title{Notes on Quantum LDPC Codes}
+
+\author{Simon Burton}
+
+\date{\today}
+
+%\begin{abstract}
+%\end{abstract}
+
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+%\newpage
+%\tableofcontents
+%\newpage
+
+% CUT HERE
+
+\def\Complex{\mathbb{C}}
+\def\C{\mathbb{C}}
+\def\R{\mathbb{R}}
+\def\Z{\mathbb{Z}}
+%\def\Ham{\mathcal{H}} % meh..
+\def\Ham{H}
+\def\Pauli{\mathcal{P}}
+\def\Spec{\mbox{Spec}}
+\def\Proveit{{\it (Proof??)}}
+\def\GL{\mathrm{GL}}
+\def\half{\frac{1}{2}}
+\def\Im{\mbox{im}}
+\def\Ker{\mbox{ker}}
+\def\Field{\mathcal{F}}
+%\def\Defn#1{\underline{#1}}
+\def\Defn#1{{\bf #1}}
+
+\newcommand{\ket}[1]{|{#1}\rangle}
+\newcommand{\expect}[1]{\langle{#1}\rangle}
+\newcommand{\bra}[1]{\langle{#1}|}
+\newcommand{\ketbra}[2]{\ket{#1}\!\bra{#2}}
+\newcommand{\braket}[2]{\langle{#1}|{#2}\rangle}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+\section{Finite unitary reflection groups}
+
+A \Defn{Coxeter group}
+has generators $\{s_1, .. s_n \}$
+with relations
+\begin{align*}
+    s_i^2 &= 1 \ \ \mbox{for}\ i=1,..,n\\
+    (s_i s_j)^{m(i,j)} &= 1\ \ \mbox{for}\ i,j=1,..,n.
+\end{align*}
+where $m(i,j)\in\{2,3,4,6\}.$
+See \cite{Humphreys1992}.
+A \Defn{dihedral group}
+is a Coxeter group with two generators.
+
+The \Defn{Coxeter diagram}
+associated to a Coxeter group is an undirected graph
+with vertices $1,..,n$ and edges $(i,j)$ when $m(i,j)\ge 3.$
+The edges are labelled with the value $m(i,j)$.
+
+
+\section{Classical simulation}
+
+\cite{Clark2007}
+
+
+
+\bibliography{refs}{}
+\bibliographystyle{abbrv}
+
+
+\end{document}
+
+
