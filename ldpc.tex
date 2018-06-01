@@ -64,12 +64,12 @@
 
 \def\Complex{\mathbb{C}}
 \def\C{\mathbb{C}}
+\def\Code{\mathcal{C}}
 \def\R{\mathbb{R}}
 \def\Z{\mathbb{Z}}
 %\def\Ham{\mathcal{H}} % meh..
-\def\Ham{H}
 \def\Pauli{\mathcal{P}}
-\def\Spec{\mbox{Spec}}
+\def\Hom{\mbox{Hom}}
 \def\Proveit{{\it (Proof??)}}
 \def\GL{\mathrm{GL}}
 \def\half{\frac{1}{2}}
@@ -91,68 +91,351 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
-\section{Homological methods}
+Classical linear error correcting codes
+work by finding a maximum likelyhood solution $u$ to
+the $\Z_2$-linear equation
+$$
+    Hu = v
+$$
+given the ``syndrome'' vector $v$.
+The solution $u$ should be the most
+likely solution given a probability
+distribution $p$ on $\Z_2^n:$
+$$
+    u = \mbox{argmax}_{u\in\Z_2^n} \  p(u | v).
+$$
 
-\subsection{The category of quantum codes}
+{\em Low density parity check (LDPC)} codes
+are those where both the row weight
+and column weight of $H$ are small.
 
-has morphisms chainmaps.
+Quantum CSS codes are similar. 
+For bitflip error correction,
+the check matrix is $H_Z.$
+We wish to find a solution $u\in\Z_2^n$ given a
+syndrome $v\in\Z_2^{m_Z}:$
+$$
+    H_Z u = v
+$$
+but this time we are looking for the most
+likely \emph{subspace} 
+$ \{ H_X^\top w + u \} $
+where $H_Z H_X^\top = 0.$
 
-Solve for the space of all chainmaps
+Belief propagation (BP) works fantastically well to
+decode classical LDPC codes.
+This algorithm has two well-known weaknesses:
+small loops in the factor graph, and degenerate (multiple)
+solutions.
+It is both surprising and frustrating that 
+quantum LDPC codes enjoy both of these qualities,
+and so BP does not work aswell.
+In particular, in surface codes BP does not
+perform well at all \cite{poulin2008}.
+See Numerics results below.
+%cannot find *any* decoding solution,
+%let alone approximate the most likely solution.
+%Attempts to overcome these obstacles are not
+The only exception to this seems to be the
+bicycle codes \cite{mackay2004}.
 
-\subsection{Pushouts and welding}
 
-\cite{michnicki2014}
-
-\subsection{Renormalization}
-
-Renormalization is a chain map
+%Many ad-hoc methods
+%try to find a language in which to unify 
+%sometimes requires enlarging the perspective/context beyond quantum codes
 
 
+%\section{Homological methods}
+
+\section{Categorical perspectives}
+
+An $n$-qubit CSS code $\Code$ is length 2 chain complex over
+the field $\Z_2:$
+$$
+\begin{tikzcd}
+    m_X  \arrow{r}{H^\top_X} & n \arrow{r}{H_Z} & m_Z,
+\end{tikzcd}
+$$
+where a $\Z_2$ vector space is labelled by its dimension.
+
+A morphism of codes $f:\Code\to\Code'$
+is a \emph{chainmap}
+$$
+\begin{tikzcd}
+    m_X  \arrow{r}{H^\top_X} \arrow{d}{f_X}  & n \arrow{r}{H_Z} \arrow{d}{f_n} & m_Z \arrow{d}{f_Z} \\
+    m'_X  \arrow{r}{H'^\top_X}  & n' \arrow{r}{H'_Z} & m'_Z 
+\end{tikzcd}
+$$
+The set of such chainmaps is
+written $\Hom(\Code, \Code')$
+and is a $\Z_2$-linear subspace of 
+$\Hom(m_X,m'_X)\oplus \Hom(n,n')\oplus \Hom(m_Z,m'_Z).$
+
+The key feature of chainmaps is that
+they lift to linear maps on the homology of
+the chain complex.
+I would argue that we should 
+focus on  chainmaps between codes, following the
+general philosophy of tensor networks,
+neural networks, etc.
+
+Delfosse \cite{delfosse2014} used a set of three chainmaps
+for decoding the 2D color code.
+These maps $f_i$ with $i\in\{R, G, B\}$ are surjective 
+chainmaps $ f_i : \Code \to \Code_i $
+where $\Code$ is the 2D color code, and $\Code_i$ is
+a surface code.
+
+%Presumably something similar works for the 3D
+%color code \cite{aloshious2016} 
+
+But there are other instances of chainmaps
+in the literature without explicitly being
+noted as such.
+The first example is the
+renormalization group (RG) decoder 
+\cite{duclos-cianci2010}
 % http://arxiv.org/abs/0911.0581
-\cite{Duclos-Cianci2010}
+as applied to error correction on
+the toric code.
+This uses a sequence of chainmaps
+$$
+\begin{tikzcd}
+    \Code_k  \arrow{r}{f_k} & \Code_{k-1} \arrow{r}{f_{k-1}} & ... 
+    \arrow{r}{f_2} & \Code_1 
+\end{tikzcd}
+$$
+where $\Code_j$ is the toric code
+with lattice size $2^j\times 2^j,$ ie. 
+$n=2^{2j+1}$ qubits.
+% See also: \cite{duivenvoorden2017}
+% "Renormalization group decoder for a four-dimensional toric code"
+% https://arxiv.org/abs/1708.09286
 
-\subsection{Homological product}
+Both the Delfosse decoder % projection decoder
+and the RG decoder rely on decoding a smaller code
+and then pulling these results back along
+chainmaps to the larger code.
+These results have been generalized to
+higher dimensions, see \cite{aloshious2016} and
+\cite{duivenvoorden2017} respectively.
+It would be interesting to verify that these
+constructions do still rely on chainmaps.
+%All this suggests that chainmaps allow for
+%a tensor network 
 
-Aka tensor product
+Another example of hidden chainmaps
+in the literature is the \emph{welding}
+construction \cite{michnicki2014}.
+I claim that welding is an example of
+a more general categorical construction
+known as a \emph{pushout} or
+\emph{fibered sum}.
+Given codes $\Code_0, \Code_1, \Code_2$
+and diagram of chainmaps
+$$
+\begin{tikzcd}
+    \Code_1  & \Code_0 \arrow{l}{f_1} \arrow{r}{f_2} & \Code_2
+\end{tikzcd}
+$$
+the fibered sum is the categorical limit, which
+constructs a code $\Code$ and commuting diagram
+$$
+\begin{tikzcd}
+    \Code_0 \arrow{d}{f_1} \arrow{r}{f_2} & \Code_2 \arrow{d} \\
+    \Code_1 \arrow{r} & \Code 
+\end{tikzcd}
+$$
+The idea is that $\Code$ is the sum of
+$\Code_1$ and $\Code_2$ where they have been
+``welded'' along a sub-code $\Code_0.$
+For a trivial example, if $f_1$ and $f_2$ are zero maps
+then $\Code = \Code_1\oplus\Code_2.$
 
-idea: apply MPS decoder \cite{bravyi2014}
-to the
-rotate toric codes
-\cite{kovalev2012}
+% surface codes and relative homology...
 
-State of the art:
-% https://arxiv.org/abs/1804.01950
-\cite{kovalev2018}
+%Note that we are ignoring the dual chain complex,
+%ie., do we need a second chainmap $g:\Code^\top\to\Code'^\top:
+%$$
+%\begin{tikzcd}
+%    m_Z  \arrow{r}{H^\top_Z} \arrow{d}{g_Z}  & n \arrow{r}{H_X} \arrow{d}{g_n} & m_X \arrow{d}{g_X} \\
+%    m'_Z  \arrow{r}{H'^\top_Z}  & n' \arrow{r}{H'_X} & m'_X 
+%\end{tikzcd}
+%$$
 
-
-Belief propagation, 
-bicycle codes, 
-poulin paper
-
-Fascinating that using belief propagation
-for quantum ldpc codes fails so spectacularly:
-first because of degeneracy,
-second because of many small loops.
-
-
-\section{Raghavendra decoding}
-
-% https://rjlipton.wordpress.com/2012/08/09/a-new-way-to-solve-linear-equations/
-% https://arxiv.org/abs/1501.01598
-This was a nice idea for an LDPC decoder,
-but I could not get it to work beyond about 80 qubits.
-It just does not seem to scale.
-
-\cite{brown2016}
-
-\section{Gauge code Hamiltonians}
-
-random instances without stabilizers 
-store a qubit
+%\subsection{Homological product}
+%
+%Aka tensor product
+%
+%idea: apply MPS decoder \cite{bravyi2014}
+%to the rotate toric codes
+%\cite{kovalev2012}
+%
+%State of the art:
+%% https://arxiv.org/abs/1804.01950
+%\cite{kovalev2018}
 
 
-\section{Classical codes and lattices}
 
+\section{Experiments}
+
+These following experiments are interesting
+but not particularly succesful.
+
+\subsection{Polymorphism decoding}
+
+In the field of constraint satisfaction problems,
+a \emph{polymorphism} is a way of combining multiple solutions
+to a problem to get a single solution.
+This leads to a new way to solve linear equations
+over finite fields, as shown in \cite{brown2016}.
+
+Working with linear equations over the finite
+field $\Field_p = \Z/p\Z$
+we take $p+1$ solutions $u_1,...,u_{p+1}$ 
+to the linear system
+$$
+    H u_i = v.
+$$
+The sum 
+$$
+    u := \sum_{1}^{p+1} u_i
+$$
+also satisfies the same linear system
+$$
+    H u = (p+1)v = v.
+$$
+%And so this is a polymorphism for this problem.
+
+In \cite{brown2016} they show how to use this
+polymorphism to solve linear systems.
+Given a linear system $H u = v$
+the algorithm works by maintaining a set
+of $N$ vectors $S_0 = \{u_1, ..., u_N \}.$
+Initially these vectors are randomly sampled from
+$\Field_p^n.$
+For each iteration $k=1,...,m$ of the algorithm, first
+select the subset $T_k$ of vectors in $S_{k-1}$ that satisfy 
+$h_k u = v,$ where $h_k$ is the $k$-th row of $H.$
+On average, $T_k$ will have size a constant fraction of $S_{k-1}$.
+Then using the above polymorphism, repeatedly
+sample $p+1$ random vectors of $T_k$ to
+form $S_k.$
+Roughly speaking,
+the polymorphism has the effect of increasing the entropy
+of the ensemble.
+
+My idea was to modify this algorithm for decoding 
+so that it is biased towards low weight solutions of $Hu = v.$
+To do this we take $S_0$ to be a random ensemble of low
+weight vectors, and at each iteration, try various
+strategies to keep the weight of the vectors low.
+%This works reasonably well (and much better than belief propagation)
+%on small quantum LDPC codes,
+%but does not scale beyond about $n=80$ qubits.
+
+%% https://rjlipton.wordpress.com/2012/08/09/a-new-way-to-solve-linear-equations/
+%% https://arxiv.org/abs/1501.01598
+%This was a nice idea for an LDPC decoder,
+%but I could not get it to work beyond about 80 qubits.
+%It just does not seem to scale.
+
+\subsection{LP decoding}
+
+Another decoder from 
+the classical LDPC literature 
+is based on a linear programming (LP) relaxation.
+See \cite{feldman2005}.
+When this decoder finds a solution it is 
+guaranteed to be the maximum likelihood (classical) solution.
+I found this method to be memory intensive and
+so doesn't scale beyond a few tens of qubits.
+
+\subsection{Cluster decoder}
+
+Decoding by 
+clustering syndromes on the Tanner graph
+works well on the toric code, and also
+generalizes to any other CSS code.
+This decoder works best when the Tanner
+graph is not highly connected.
+See numerics below.
+
+\subsection{From decoder to code}
+
+Decoders can also be used to find low weight codewords.
+This can be used to iteratively build a code
+by adding these codewords to $H_X.$ 
+By switching between the code and it's dual we
+can maintain performance of both codes.
+This is how the polymorphism code was built, see below.
+
+%\section{Gauge code Hamiltonians}
+%
+%random instances without stabilizers 
+%store a qubit
+
+%\section{Classical codes and lattices}
+%
+%\section{Conclusion}
+%
+%we may need a quantum computer to decode LDPC codes
+
+% good codes exist: \cite{calderbank1996}
+
+\subsection{Numerical results}
+
+\begin{center}
+\begin{tabular}{|l|l|l||l|l|l| }
+\hline
+            &                      & bitflip & BP    & cluster & polymorphism    \\
+description & parameters           & noise   & error &  error  & error    \\
+%\hline
+%\hline
+%stean$\otimes$stean & $[[67, 1, 9]]$  & 0.01  & 0.   &  0.   & 0.    \\
+%            &                      & 0.02  & 0.   & 0. & 0.  \\
+%            &                      & 0.03  & 0.   & 0. & 0.  \\
+\hline
+\hline
+polymorphism & $[[80, 32, \le 4]]$  & 0.01  & 0.054 &  0.35 & 0.05  \\
+            &                      & 0.02  & 0.20   & 0.6  & 0.18  \\
+            &                      & 0.03  & 0.38   & 0.78 & 0.30  \\
+            &                      & 0.04  & 0.60   & 0.87 & 0.5  \\
+\hline
+\hline
+toric     & $[[128, 2, 8]]$        & 0.01  & 0.05 &       & 0.1  \\
+            &                      & 0.02  & 0.12 & 0.006 & 0.1  \\
+            &                      & 0.03  & 0.25 & 0.015 &   \\
+            &                      & 0.04  & 0.34 & 0.036 &   \\
+            &                      & 0.05  & 0.53 & 0.076 &   \\
+            &                      & 0.06  & 0.61 & 0.12  &   \\
+            &                      & 0.07  & 0.75 & 0.20  &   \\
+\hline
+\hline
+product     & $[[396, 36, \le 4]]$ & 0.01  & 0.01 & 0.4   & 0.4$\pm$ 0.1  \\
+            &                      & 0.02  & 0.04 & 0.73  &   \\
+            &                      & 0.03  & 0.13 &    &   \\
+            &                      & 0.04  & 0.24 &    &   \\
+            &                      & 0.05  & 0.38 &    &   \\
+            &                      & 0.06  & 0.63 &    &   \\
+            &                      & 0.07  & 0.83 &    &   \\
+\hline
+\hline
+%product     & $[[2112, 64, \le 49]]$ & 0.01  & 0.0007 &    &   \\
+product     & $[[2112, 64, \le 49]]$ & 0.02  & 0.004   &   &   \\
+            &                        & 0.03  & 0.015   &    &   \\
+            &                        & 0.04  & 0.065   &    &   \\
+            &                        & 0.05  & 0.4  &    &   \\
+\hline
+\hline
+bicycle     & $[[3780, 630, \le 714]]$ & 0.01  &         & 0.3    &   \\
+            &                          & 0.03  & 0.004   &    &   \\
+\hline
+\end{tabular}
+\end{center}
+
+It has been interesting to compare these results to the state of
+the art \cite{kovalev2018}.
 
 \bibliography{refs}{}
 \bibliographystyle{abbrv}
